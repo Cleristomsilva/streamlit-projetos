@@ -75,8 +75,8 @@ def grafico_escolaridade_e_renda(dados, candidatos_selecionados, figsize=(12, 5)
     # Gráfico de Renda
     rendas = df_selected[5].value_counts().sort_index()
     rendas = rendas.reindex(
-        ['Até R$1.400', 'de R$1.400 a R$2.800', 'de R$2.800 a R$4.200', 'de R$4.200 a R$5.600',
-         'Acima de R$5.600'],
+        ['Até R$ 1.400', 'de R$ 1.400 a R$ 2.800', 'de R$ 2.800 a R$ 4.200', 'de R$ 4.200 a R$ 5.600',
+         'Acima de R$ 5.600'],
         fill_value=0
     )
 
@@ -162,6 +162,10 @@ def main():
 
     fig_bairros = grafico_bairros(dados, candidatos_selecionados)
     st.pyplot(fig_bairros)
+
+    # Filtro na barra lateral para selecionar os candidatos
+    candidatos_selecionados = st.sidebar.multiselect('Selecione os Candidatos:', candidatos, default=candidatos)
+    st.sidebar.write(f'**Total de Participantes da Pesquisa:** {len(dados)}')
 
 if __name__ == "__main__":
     main()
