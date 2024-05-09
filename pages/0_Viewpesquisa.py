@@ -147,6 +147,10 @@ def main():
     # Filtro na barra lateral para selecionar os candidatos
     candidatos_selecionados = st.sidebar.multiselect('Selecione os Candidatos:', candidatos, default=candidatos)
 
+    # Filtro na barra lateral para selecionar os candidatos
+    candidatos_selecionados = st.sidebar.multiselect('Selecione os Candidatos:', candidatos, default=candidatos)
+    st.sidebar.write(f'**Total de Participantes da Pesquisa:** {len(dados)}')
+
     # Verificar se há dados correspondentes aos candidatos selecionados
     dados_selecionados = [dado for dado in dados if dado[12] in candidatos_selecionados]
     if len(dados_selecionados) == 0:
@@ -163,9 +167,7 @@ def main():
     fig_bairros = grafico_bairros(dados, candidatos_selecionados)
     st.pyplot(fig_bairros)
 
-    # Filtro na barra lateral para selecionar os candidatos
-    candidatos_selecionados = st.sidebar.multiselect('Selecione os Candidatos:', candidatos, default=candidatos)
-    st.sidebar.write(f'**Total de Participantes da Pesquisa:** {len(dados)}')
+    
 
 if __name__ == "__main__":
     main()
