@@ -75,8 +75,8 @@ def grafico_escolaridade_e_renda(dados, candidatos_selecionados, figsize=(12, 5)
     # Gráfico de Renda
     rendas = df_selected[5].value_counts().sort_index()
     rendas = rendas.reindex(
-        ['Até R$1.400', 'de R$1.400 a R$2.800', 'de R$2.800 a R$4.200', 'de R$4.200 a R$5.600',
-         'Acima de R$5.600'],
+        ['Até R$ 1.400', 'de R$ 1.400 a R$ 2.800', 'de R$ 2.800 a R$ 4.200', 'de R$ 4.200 a R$ 5.600',
+         'Acima de R$ 5.600'],
         fill_value=0
     )
 
@@ -136,25 +136,15 @@ def main():
     # Conectar ao banco de dados e recuperar os dados da pesquisa
     dados = conectar_banco_de_dados()
 
-    # Verificar se há dados disponíveis
-    if len(dados) == 0:
-        st.warning('Não há dados disponíveis no banco de dados.')
-        return
-
     # Opções de candidatos
     candidatos = ['Luciana e Kadu', 'Dr. Paulo e Guará', 'Dr. Rafael e Juninho', 'Dr. Márcio e Magali']
 
     # Filtro na barra lateral para selecionar os candidatos
     candidatos_selecionados = st.sidebar.multiselect('Selecione os Candidatos:', candidatos, default=candidatos)
-
-    # Verificar se há dados correspondentes aos candidatos selecionados
-    dados_selecionados = [dado for dado in dados if dado[12] in candidatos_selecionados]
-    if len(dados_selecionados) == 0:
-        st.warning('Não há dados correspondentes aos candidatos selecionados.')
-        return
+    st.sidebar.write(f'**Total de Participantes da Pesquisa:** {len(dados)}')
 
     # Criar gráficos para cada pergunta da pesquisa, com base nos candidatos selecionados
-    fig_idade_genero = grafico_idade_e_genero(dados, candidatos_selecionados)
+    fig_idade_genero =grafico_idade_e_genero(dados,candidatos_selecionados)
     st.pyplot(fig_idade_genero)
 
     fig_escolaridade_renda = grafico_escolaridade_e_renda(dados, candidatos_selecionados)
@@ -162,6 +152,7 @@ def main():
 
     fig_bairros = grafico_bairros(dados, candidatos_selecionados)
     st.pyplot(fig_bairros)
+
 
 if __name__ == "__main__":
     main()
