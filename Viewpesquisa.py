@@ -141,7 +141,17 @@ def main():
 
     # Filtro na barra lateral para selecionar os candidatos
     candidatos_selecionados = st.sidebar.multiselect('Selecione os Candidatos:', candidatos, default=candidatos)
-    st.sidebar.write(f'**Total de Participantes da Pesquisa:** {len(dados)}')
+
+    # Filtro na barra lateral para selecionar o total de participantes titulo em negrito e fonte maior
+    st.sidebar.markdown('**Total Apurado:**', unsafe_allow_html=True)
+
+    # Filtro na barra lateral para selecionar o total de participantes
+    total_participantes=0
+    for candidato in candidatos_selecionados:
+        num_votos=len([dado for dado in dados if dado[12] == candidato])
+        st.sidebar.write(f'**{candidato}= {num_votos}**',)
+        total_participantes+=num_votos
+    st.sidebar.write(f'**Total de Participantes:** {total_participantes}')
 
     # Criar gráficos para cada pergunta da pesquisa, com base nos candidatos selecionados
     fig_idade_genero =grafico_idade_e_genero(dados,candidatos_selecionados)
