@@ -148,13 +148,10 @@ def main():
         fig_bairros_df = grafico_bairros(dados, candidatos_selecionados)
         # selecionar as cores dos candidatos
 
-        st.plotly_chart(fig_bairros_df)
+        st.plotly_chart(fig_bairros_df, use_container_width=False)
 
         df_votos=criar_dataframe_votos(dados)
-        st.write(df_votos)
-
-        # Mostrar DataFrame
-        print(df_votos)
+        st.write(df_votos, use_container_width=False)
 
 
 if __name__ == "__main__":
