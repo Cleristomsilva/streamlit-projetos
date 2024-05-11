@@ -3,6 +3,12 @@ import pandas as pd
 import mysql.connector
 import plotly.graph_objects as go
 
+# Definir cores para cada candidato
+cores = {'Luciana e Kadu': 'green',
+         'Dr. Paulo e Guará': 'blue',
+         'Dr. Rafael e Juninho': 'red',
+         'Dr. Márcio e Magali': 'orange'}
+
 
 def conectar_banco_de_dados():
     # Conectar ao banco de dados MySQL
@@ -28,22 +34,42 @@ def conectar_banco_de_dados():
 def grafico_bairros(dados, candidatos_selecionados, figsize=(12, 5)):
     df = pd.DataFrame(dados)
     df_selected = df[df[12].isin(candidatos_selecionados)]
-    bairros_counts = df_selected[4].value_counts().sort_index()
 
-    # Criar um DataFrame com os dados dos bairros e o número de votos de cada candidato
-    bairros_info = pd.DataFrame(index=bairros_counts.index)
+    # Lista completa de todos os bairros
+    todos_bairros = [
+        'Aterrado', 'Bairro da Saúde', 'Banqueta', 'Barra do Peixe', 'Beira Rio', 'Bela Vista', 'Boiadeiro',
+        'Campo Alegre', 'Centro', 'Esplanada', 'Fernando Lobo', 'Gauchão', 'Gironda', 'Goiabal',
+        'Granja 3 de Outubro', 'Grota', 'Ilha Gama Cerqueira', 'Ilha Recreio', 'Ilha do Lazareto', 'Jaqueira',
+        'Jardim Paraíso', 'Jardim Santa Rosa', 'Marinópolis', 'Matadouro', 'Morro do Cipó', 'Morro Trindade',
+        'Morro São Sebastião', 'Morro São Geraldo', 'Morro dos Cabritos', 'Morro da Conceição', 'Parada Breves',
+        'Porto Velho', 'Porto Novo', 'Praça da Bandeira', 'Remanso', 'São Geraldo', 'Santa Marta I', 'Santa Marta II',
+        'Santa Rita', 'Sítio Branco', 'Terra do Santo', 'Terreirão', 'Timbira', 'Torrentes', 'Vila Laroca'
+    ]
+
+    # Criar um DataFrame vazio com todos os bairros como índices
+    bairros_info = pd.DataFrame(index=todos_bairros)
+
+    # Preencher o DataFrame com os votos de cada candidato
     for candidato in candidatos_selecionados:
-        bairros_info[candidato] = df_selected[df_selected[12] == candidato][4].value_counts()
+        votos_por_bairro = df_selected[df_selected[12] == candidato][4].value_counts()
+        bairros_info[candidato] = votos_por_bairro
+
+    # Preencher os valores NaN (bairros sem votos) com zero
+    bairros_info.fillna(0, inplace=True)
 
     # Criar lista de barras para o gráfico Plotly
     bar_data = []
     for candidato in candidatos_selecionados:
-        bar_data.append(go.Bar(
-            x=bairros_info.index,
-            y=bairros_info[candidato],
-            name=candidato,
-            hoverinfo='y+name'
-        ))
+        bar_data.append(
+            go.Bar(
+                x=bairros_info.index,  # Usar a lista completa de todos os bairros
+                y=bairros_info[candidato],
+                name=candidato,
+                hoverinfo='x+y+name',  # Informações exibidas ao passar o mouse
+                hovertemplate='%{x}: %{y}',  # Template de exibição ao passar o mouse
+                marker=dict(color=cores[candidato])  # Usar a cor correspondente ao candidato
+                )
+            )
 
     # Layout do gráfico
     layout = go.Layout(
@@ -92,7 +118,7 @@ def main():
             total_participantes = 0
             for candidato in candidatos_selecionados:
                 num_votos = len([dado for dado in dados if dado[12] == candidato])
-                st.sidebar.write(f'**{candidato}= {num_votos}**', )
+                st.sidebar.write(f'**{candidato}= {num_votos}**',)
                 # st.sidebar.write(f'**Total de Votos:** {num_votos}')
                 total_participantes += num_votos
 
@@ -100,6 +126,8 @@ def main():
 
         # Criar gráfico de bairros interativo com Plotly
         fig_bairros = grafico_bairros(dados, candidatos_selecionados)
+        # selecionar as cores dos candidatos
+
         st.plotly_chart(fig_bairros)
 
 
