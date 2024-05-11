@@ -84,6 +84,27 @@ def grafico_bairros(dados, candidatos_selecionados, figsize=(12, 5)):
 
     return fig
 
+def criar_dataframe_votos(dados):
+    # Criar DataFrame vazio com os bairros como índice e os candidatos como colunas
+    bairros = [
+        'Aterrado', 'Bairro da Saúde', 'Banqueta', 'Barra do Peixe', 'Beira Rio', 'Bela Vista', 'Boiadeiro',
+        'Campo Alegre', 'Centro', 'Esplanada', 'Fernando Lobo', 'Gauchão', 'Gironda', 'Goiabal',
+        'Granja 3 de Outubro', 'Grota', 'Ilha Gama Cerqueira', 'Ilha Recreio', 'Ilha do Lazareto', 'Jaqueira',
+        'Jardim Paraíso', 'Jardim Santa Rosa', 'Marinópolis', 'Matadouro', 'Morro do Cipó', 'Morro Trindade',
+        'Morro São Sebastião', 'Morro São Geraldo', 'Morro dos Cabritos', 'Morro da Conceição', 'Parada Breves',
+        'Porto Velho', 'Porto Novo', 'Praça da Bandeira', 'Remanso', 'São Geraldo', 'Santa Marta I', 'Santa Marta II',
+        'Santa Rita', 'Sítio Branco', 'Terra do Santo', 'Terreirão', 'Timbira', 'Torrentes', 'Vila Laroca'
+    ]  # Adicione todos os bairros
+    candidatos = ['Luciana e Kadu', 'Dr. Paulo e Guará', 'Dr. Rafael e Juninho', 'Dr. Márcio e Magali']
+    df = pd.DataFrame(index=bairros, columns=candidatos)
+
+    # Preencher o DataFrame com o número de votos de cada candidato em cada bairro
+    for bairro in bairros:
+        for candidato in candidatos:
+            num_votos = len([dado for dado in dados if dado[4] == bairro and dado[12] == candidato])
+            df.at[bairro, candidato] = num_votos
+
+    return df
 
 def main():
     # se houver conexão com o banco mostra os graficos se nao houver mostra a mensagem sem conexão
@@ -125,11 +146,15 @@ def main():
             st.sidebar.write(f'**Total de Participantes:** {total_participantes}')
 
         # Criar gráfico de bairros interativo com Plotly
-        fig_bairros = grafico_bairros(dados, candidatos_selecionados)
+        fig_bairros_df = grafico_bairros(dados, candidatos_selecionados)
         # selecionar as cores dos candidatos
 
-        st.plotly_chart(fig_bairros)
+        st.plotly_chart(fig_bairros_df)
 
+        df_votos=criar_dataframe_votos(dados)
+
+        # Mostrar DataFrame
+        st.write(df_votos)  # Mostra o DataFrame no Streamlit
 
 if __name__ == "__main__":
     main()
