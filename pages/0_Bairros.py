@@ -105,7 +105,6 @@ def criar_dataframe_votos(dados):
             df.at[bairro, candidato] = num_votos
 
     return df
-
 def main():
     # se houver conexão com o banco mostra os graficos se nao houver mostra a mensagem sem conexão
     if not conectar_banco_de_dados():
@@ -152,9 +151,11 @@ def main():
         st.plotly_chart(fig_bairros_df)
 
         df_votos=criar_dataframe_votos(dados)
+        st.write(df_votos)
 
         # Mostrar DataFrame
-        st.write(df_votos)  # Mostra o DataFrame no Streamlit
+        print(df_votos)
+
 
 if __name__ == "__main__":
     main()
