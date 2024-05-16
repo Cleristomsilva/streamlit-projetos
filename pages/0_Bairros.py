@@ -100,6 +100,9 @@ def criar_dataframe_votos(dados):
 
     # Preencher o DataFrame com o número de votos de cada candidato em cada bairro
     for bairro in bairros:
+        num_votos = len([dado for dado in dados if dado[4] == bairro])
+        df.at[bairro, 'Total'] = num_votos
+    for bairro in bairros:
         for candidato in candidatos:
             num_votos = len([dado for dado in dados if dado[4] == bairro and dado[12] == candidato])
             df.at[bairro, candidato] = num_votos
